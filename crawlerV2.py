@@ -39,6 +39,7 @@ class Crawler:
 	def getPage(self, url):
 		try:
 			req = requests.get(url)
+			print(url)
 		except requests.exceptions.RequestException:
 			return None
 		return BeautifulSoup(req.text, 'html.parser')
@@ -61,7 +62,7 @@ class Crawler:
 			else:
 				bs = self.getPage(site.url + url)
 			if bs is None:
-				print('Something was wrong with tah page or URL. Skipping!')
+				print('Something was wrong with that page or URL. Skipping!')
 				return
 			title = self.safeGet(bs, site.titleTag)
 			body = self.safeGet(bs, site.bodyTag)
@@ -71,15 +72,14 @@ class Crawler:
 
 crawler = Crawler()
 
-siteData =[
-	['O\'Reilly Media', 'http://oreilly.com', 'https://ssearch.oreilly.com/?q=', 'article.product-result', 'p.title a', True, 'h1', 'section#product-description' ],
-['Reuters', 'http://reuters.com', 'http://www.reuters.com/search/news?blob=', 'div.search-result-content', 'h3.search-result-title a', False, 'h1', 'div.StandardArticleBody_body_1gnLA'],
-['Brookings', 'http://www.brookings.edu', 'https://www.brookings.edu/search/?s=', 'div.list-content article', 'h4.title a', True, 'h1','div.post-body']
+siteData =[['O\'Reilly Media', 'http://oreilly.com', 'https://www.oreilly.com/search/?q=', '#main article', 'div.title-info > div > div > h1', True, 'h1', 'div.title-description.t-description.sbo-reader-content > div'],
+	['Reuters', 'http://reuters.com', 'http://www.reuters.com/search/news?blob=', 'div.search-result-content', 'h3.search-result-title a', False, 'h1', 'article > div.ArticleBodyWrapper'],
+	['Brookings', 'http://www.brookings.edu', 'https://www.brookings.edu/search/?s=', 'div.list-content article', 'h4.title a', False, 'h1','div.post-body']
 	 ]
-sites =[]
+sites =[ ]
 for row in siteData:
 	sites.append(Website(row[0], row[1], row[2], row[3], row[4], row[5], row[6],row[7]))
-topics =['python', 'data science']
+topics = ['python', 'data+science']
 for topic in topics:
 	print(f'GETTING INFO ABOUT: ' + topic)
 	for targerSite in sites:
